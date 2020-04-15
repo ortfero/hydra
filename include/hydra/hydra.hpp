@@ -29,6 +29,23 @@ struct config {
 
 
 
+struct nolock {
+  
+  nolock() noexcept = default;
+  nolock(nolock const&) noexcept = delete;
+  nolock& operator = (nolock const&) noexcept = delete;
+  
+  bool try_lock() noexcept { return true; }
+  void unlock() noexcept { }
+  void lock() noexcept { }
+  bool try_lock_shared() noexcept { return true; }
+  void unlock_shared() noexcept { }
+  void lock_shared() noexcept { }
+
+}; // nolock
+
+
+
 struct spinlock {
 
   spinlock() noexcept = default;
@@ -47,9 +64,25 @@ struct spinlock {
     flag_.store(false, std::memory_order_release);
   }
 
+
   void lock() noexcept {
     while(!try_lock())
       std::this_thread::yield();
+  }
+  
+  
+  bool try_lock_shared() noexcept {
+    return try_lock();
+  }
+  
+  
+  void unlock_shared() noexcept {
+    unlock();
+  }
+  
+  
+  void lock_shared() noexcept {
+    lock();
   }
 
 
@@ -84,18 +117,15 @@ struct shared_spinlock {
   }
 
 
-
   void unlock() noexcept {
     data_.writer.store(false, std::memory_order_release);
   }
-
-
+  
 
   void lock() noexcept {
     while(!try_lock())
       std::this_thread::yield();
   }
-
 
 
   bool try_lock_shared() noexcept {
