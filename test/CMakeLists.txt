@@ -4,7 +4,7 @@ project(hydra)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(hydra tests.cpp)
+add_executable(hydra test.cpp)
 
 target_include_directories(hydra PUBLIC
     "${PROJECT_SOURCE_DIR}/../include"
