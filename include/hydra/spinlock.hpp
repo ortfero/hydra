@@ -27,7 +27,7 @@ public:
 
 
   void unlock() noexcept {
-    data_.writer.store(false, std::memory_order_release);
+    flag_.store(false, std::memory_order_release);
   }
   
 
