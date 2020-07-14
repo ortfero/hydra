@@ -32,3 +32,6 @@
 *.app
 build/
 *.user
+test/CMakeSettings.json
+benchmark/.vscode/
+test/.vs/

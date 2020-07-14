@@ -3,6 +3,7 @@
 
 
 #include <chrono>
+#include <atomic>
 
 
 #if defined(_WIN32)
@@ -41,41 +42,33 @@ namespace hydra {
     atomic_cv& operator = (atomic_cv const&) = delete;
 
     void notify_one() {
-      raised_ = true;
-      WakeByAddressSingle(&raised_);
-    }
-
-
-    void notify_all() {
-      raised_ = true;
-      WakeByAddressAll(&raised_);
-    }
-
-
-    void reset() {
-      raised_ = false;
+      notified_.fetch_add(1, std::memory_order_relaxed);
+      WakeByAddressSingle(&notified_);
     }
 
 
     void wait() {
-      bool raised = false;
-      while(!raised_)
-        WaitOnAddress(&raised_, &raised, sizeof(bool), INFINITE);
+      unsigned expected = 0;
+      while (notified_.compare_exchange_weak(expected, 0, std::memory_order_relaxed))
+        if (!WaitOnAddress(&notified_, &expected, sizeof(notified_), INFINITE))
+          return;
+      notified_.fetch_sub(1, std::memory_order_relaxed);
     }
 
 
     bool wait(std::chrono::milliseconds timeout) {
-      bool raised = false;
-      while(!raised_)
-        if(!WaitOnAddress(&raised_, &raised, sizeof(bool), DWORD(timeout.count())))
+      unsigned expected = 0;
+      while(notified_.compare_exchange_weak(expected, 0, std::memory_order_relaxed))
+        if(!WaitOnAddress(&notified_, &expected, sizeof(notified_), DWORD(timeout.count())))
           return false;
+      notified_.fetch_sub(1, std::memory_order_relaxed);
       return true;
     }
 
 
   private:
 
-    bool raised_{false};
+    std::atomic_uint notified_{0};
   }; // atomic_cv
 
 #else

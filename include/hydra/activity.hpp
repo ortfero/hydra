@@ -65,7 +65,6 @@ namespace hydra {
         
         while(!stopping_.load(std::memory_order_relaxed)) {
           new_message_.wait();
-          new_message_.reset();
           handler(batch);
         }
         

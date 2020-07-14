@@ -14,11 +14,12 @@
 namespace hydra {
   
   
-struct shared_spinlock {
+class shared_spinlock {
+public:
 
   shared_spinlock() noexcept = default;
-  shared_spinlock(spinlock const&) noexcept = delete;
-  shared_spinlock& operator = (spinlock const&) noexcept = delete;
+  shared_spinlock(shared_spinlock const&) noexcept = delete;
+  shared_spinlock& operator = (shared_spinlock const&) noexcept = delete;
 
 
   bool try_lock() noexcept {
@@ -28,7 +29,7 @@ struct shared_spinlock {
     if(data_.writer.exchange(true, std::memory_order_acquire))
       return false;
 
-    while(data_.readers.load(std::memory_order_acquire) > 0)
+    while(data_.readers.load(std::memory_order_relaxed) > 0)
       relax();
 
     return true;
@@ -47,11 +48,14 @@ struct shared_spinlock {
 
 
   bool try_lock_shared() noexcept {
-    ++data_.readers;
+    if (data_.writer.load(std::memory_order_relaxed))
+      return false;
 
-    if(data_.writer.load(std::memory_order_relaxed) ||
-       data_.writer.load(std::memory_order_acquire)) {
-      --data_.readers;
+    data_.readers.fetch_add(1, std::memory_order_relaxed);
+
+    bool expected = true;
+    if(data_.writer.compare_exchange_weak(expected, true, std::memory_order_relaxed)) {
+      data_.readers.fetch_sub(1, std::memory_order_relaxed);
       return false;
     }
 
@@ -60,7 +64,7 @@ struct shared_spinlock {
 
 
   void unlock_shared() noexcept {
-    --data_.readers;
+    data_.readers.fetch_sub(1, std::memory_order_relaxed);
   }
 
 

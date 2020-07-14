@@ -59,7 +59,7 @@ TEST_CASE("activity::run/3") {
     auto const n = batch.try_fetch();
     if(!n)
       return;
-    REQUIRE(batch[n] != "very very very long text argument");
+    REQUIRE(batch[n] == "very very very long text argument");
     batch.fetched();
   });
 
