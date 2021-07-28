@@ -4,7 +4,5 @@
 
 
 TEST_CASE("spinlock::spinlock") {
-
-  hydra::spinlock sync;
-
+    hydra::spinlock sync;
 }

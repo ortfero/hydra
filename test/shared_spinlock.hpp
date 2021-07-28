@@ -4,9 +4,5 @@
 
 
 TEST_CASE("shared_spinlock::shared_spinlock") {
-
-  hydra::shared_spinlock sync;
-
-
-
+    hydra::shared_spinlock sync;
 }
