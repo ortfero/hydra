@@ -2,7 +2,9 @@
 
 
 #include <thread>
-#include <doctest/doctest.h>
+
+#include "doctest.h"
+
 #include <hydra/atomic_cv.hpp>
 
 

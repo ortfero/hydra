@@ -1,4 +1,5 @@
-#include <doctest/doctest.h>
+#include "doctest.h"
+
 #include <hydra/shared_spinlock.hpp>
 
 

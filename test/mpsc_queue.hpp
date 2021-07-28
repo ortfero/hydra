@@ -4,7 +4,9 @@
 
 #include <thread>
 #include <future>
-#include <doctest/doctest.h>
+
+#include "doctest.h"
+
 #include <hydra/mpsc_queue.hpp>
 
 

@@ -3,7 +3,9 @@
 
 #include <thread>
 #include <string>
-#include <doctest/doctest.h>
+
+#include "doctest.h"
+
 #include <hydra/activity.hpp>
 
 
