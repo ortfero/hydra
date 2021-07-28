@@ -8,18 +8,24 @@
 
 #if defined(_WIN32)
 
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
+#    if !defined(_X86_) && !defined(_AMD64_) && !defined(_ARM_) \
+        && !defined(_ARM64_)
+#        if defined(_M_IX86)
+#            define _X86_
+#        elif defined(_M_AMD64)
+#            define _AMD64_
+#        elif defined(_M_ARM)
+#            define _ARM_
+#        elif defined(_M_ARM64)
+#            define _ARM64_
+#        endif
+#    endif
 
-#ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN
-#endif
+#    include <synchapi.h>
 
-#include <Windows.h>
-
+#if defined(_MSC_VER)
 #pragma comment(lib, "synchronization.lib")
-
+#endif
 
 #else
 
