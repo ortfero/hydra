@@ -5,8 +5,6 @@ incdirs = include_directories('../include')
 
 deps = []
 
-deps = []
-
 system = host_machine.system()
 
 if system == 'windows'
