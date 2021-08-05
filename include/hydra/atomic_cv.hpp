@@ -56,7 +56,7 @@ namespace hydra {
     void wait() {
       unsigned expected = 0;
       while (notified_.compare_exchange_weak(expected, 0, std::memory_order_relaxed))
-        if (!WaitOnAddress(&notified_, &expected, sizeof(notified_), INFINITE))
+        if (!WaitOnAddress(&notified_, &expected, sizeof(notified_), DWORD(-1)))
           return;
       notified_.fetch_sub(1, std::memory_order_relaxed);
     }
