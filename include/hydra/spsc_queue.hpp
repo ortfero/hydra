@@ -21,6 +21,7 @@ namespace hydra {
     size_type blocks_count() const noexcept { return blocks_count_; }
     void clear_blocks_count() noexcept { blocks_count_ = 0; }
     size_type size() const noexcept { return producer_ - consumer_; }
+    size_type capacity() const noexcept { return capacity_; }
     
     
     spsc_queue(spsc_queue&& other) noexcept:
@@ -90,12 +91,13 @@ namespace hydra {
       if(!pool_)
         return sequence{};
 
-      sequence const p{producer_.fetch_add(1, std::memory_order_relaxed)};
+      sequence const p{producer_};
+      ++producer_;
 
       if(p.value() - consumer_ < capacity_)
         return p;
 
-      blocks_count_.fetch_add(1, std::memory_order_relaxed);
+      ++blocks_count_;
 
       auto const started = std::chrono::steady_clock::now();
 
