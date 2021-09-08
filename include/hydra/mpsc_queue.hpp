@@ -159,10 +159,17 @@ namespace hydra {
     size_type index_mask_{0};
     std::unique_ptr<T[]> pool_;
     std::unique_ptr<std::atomic<sequence::value_type>[]> published_;
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4324) // disable 'structure was padded due to alignment specifier'
+#endif
     alignas (cacheline)
       std::atomic<size_type> producer_{0};
     alignas (cacheline)
       size_type consumer_{0};
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
     std::atomic<size_type> blocks_count_{0};
 
 

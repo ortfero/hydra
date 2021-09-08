@@ -63,7 +63,7 @@ template<typename T, typename L = shared_spinlock> struct synchronized {
 
 private:
 
-  L lock_;
+  mutable L lock_;
   T resource_;
 
 }; // synchronized
