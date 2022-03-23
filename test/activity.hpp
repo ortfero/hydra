@@ -12,7 +12,6 @@
 TEST_CASE("activity::activity") {
     hydra::activity<int> target;
     REQUIRE(!target.active());
-    REQUIRE(!target.claim());
 }
 
 
