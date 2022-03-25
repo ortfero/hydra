@@ -10,6 +10,8 @@
 #include <chrono>
 #include <thread>
 
+#include <hydra/sequence.hpp>
+
 
 namespace hydra {
 
