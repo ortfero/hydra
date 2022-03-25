@@ -19,6 +19,7 @@ namespace hydra {
         using message_type = M;
         using queue_type = Q;
         using size_type = typename Q::size_type;
+        using batch_type = batch<Q>;
 
     private:
         std::thread worker_;
