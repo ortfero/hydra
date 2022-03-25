@@ -8,6 +8,7 @@ project('hydra', 'cpp',
 headers = [
     'include/hydra/activity.hpp',
     'include/hydra/batch.hpp',
+    'include/hydra/futex_event.hpp',
     'include/hydra/mpsc_queue.hpp',
     'include/hydra/sequence.hpp',
     'include/hydra/spsc_queue.hpp'
@@ -18,7 +19,8 @@ incdirs = include_directories('./include')
 hydra = declare_dependency(
     version: meson.project_version(),
     include_directories: incdirs,
-    sources: headers
+    sources: headers,
+    dependencies: [dependency('threads')]
 )
 
 subdir('test')
