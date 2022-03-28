@@ -107,9 +107,10 @@ namespace hydra {
 
 
         sequence claim() noexcept {
-            assert(!!pool_ && "Memory is not reserved");
+            if(!pool_)
+                return sequence{};
 
-            sequence const p {
+            sequence const p{
                 producer_.fetch_add(1, std::memory_order_relaxed)};
             if(p.value() - consumer_ < capacity_)
                 return p;
@@ -126,9 +127,11 @@ namespace hydra {
         template<typename Rep, typename Period>
         sequence claim_for(
             std::chrono::duration<Rep, Period> const& duration) noexcept {
-            assert(!!pool_ && "Memory is not reserved");
 
-            sequence const p {
+            if(!pool_)
+                return sequence{};
+
+            sequence const p{
                 producer_.fetch_add(1, std::memory_order_relaxed)};
 
             if(p.value() - consumer_ < capacity_)
@@ -142,7 +145,7 @@ namespace hydra {
                 std::this_thread::yield();
 
                 if(std::chrono::steady_clock::now() - started >= duration)
-                    return sequence {};
+                    return sequence{};
             }
 
             return p;
@@ -155,10 +158,11 @@ namespace hydra {
 
 
         sequence try_fetch() noexcept {
-            assert(!!pool_ && "Memory is not reserved");
+            if(!pool_)
+                return sequence{};
             if(published_[consumer_ & index_mask_] != consumer_ + 1)
-                return sequence {};
-            return sequence {consumer_};
+                return sequence{};
+            return sequence{consumer_};
         }
 
 
