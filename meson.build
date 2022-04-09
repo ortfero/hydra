@@ -16,11 +16,20 @@ headers = [
 
 incdirs = include_directories('./include')
 
+hydra_deps = [dependency('threads')]
+
+system = host_machine.system()
+if system == 'windows'
+  cpp = meson.get_compiler('cpp')
+  synch_api = cpp.find_library('synchronization', required: true)
+  hydra_deps += [synch_api]
+endif
+
 hydra = declare_dependency(
     version: meson.project_version(),
     include_directories: incdirs,
     sources: headers,
-    dependencies: [dependency('threads')]
+    dependencies: hydra_deps
 )
 
 subdir('test')
