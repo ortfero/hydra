@@ -9,6 +9,9 @@
 #include <hydra/activity.hpp>
 
 
+TEST_SUITE("activity") {
+
+
 TEST_CASE("activity::activity") {
     hydra::activity<int> target;
     REQUIRE(!target.active());
@@ -66,4 +69,7 @@ TEST_CASE("activity::run/3") {
         target[n] = "very very very long text argument";
         target.publish(n);
     }
+}
+
+
 }

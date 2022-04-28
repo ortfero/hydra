@@ -3,5 +3,6 @@
 
 
 #include "activity.hpp"
+#include "futex_event.hpp"
 #include "mpsc_queue.hpp"
 #include "spsc_queue.hpp"
