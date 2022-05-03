@@ -1,6 +1,5 @@
 project('hydra', 'cpp',
     license: 'MIT',
-    version: '0.1.1',
     default_options: [
         'cpp_std=c++20',
         'warning_level=3'])
@@ -42,6 +41,5 @@ pkg.generate(
     name: 'hydra',
     filebase: 'hydra',
     subdirs: ['hydra'],
-    version: meson.project_version(),
     description: 'C++17 header-only library for active objects'
 )
