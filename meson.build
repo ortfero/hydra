@@ -33,6 +33,7 @@ hydra = declare_dependency(
 )
 
 subdir('test')
+subdir('stand')
 
 install_headers(headers, subdir: 'hydra')
 
