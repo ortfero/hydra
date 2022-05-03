@@ -49,7 +49,7 @@ namespace hydra {
 
         void publish(sequence n) noexcept {
             messages_.publish(n);
-            new_message_.notify_all();
+            new_message_.notify_one();
         }
 
 
@@ -57,7 +57,7 @@ namespace hydra {
             if(!worker_.joinable()
                || stopping_.test_and_set(std::memory_order_relaxed))
                 return;
-            new_message_.notify_all();
+            new_message_.notify_one();
             worker_.join();
         }
 

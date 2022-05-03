@@ -34,7 +34,6 @@
 #    include <sys/syscall.h>
 #    include <sys/time.h>
 #    include <unistd.h>
-#    include <limits.h>
 
 #else
 
@@ -56,7 +55,7 @@ namespace hydra {
         futex_event& operator=(futex_event const&) = delete;
 
 
-        void notify_all() noexcept {
+        void notify_one() noexcept {
             value_.fetch_add(1, std::memory_order_relaxed);
 #if defined(_WIN32)
             WakeByAddressSingle(&value_);
@@ -64,7 +63,7 @@ namespace hydra {
             syscall(SYS_futex,
                     &value_,
                     FUTEX_WAKE_PRIVATE,
-                    INT_MAX,
+                    1,
                     nullptr,
                     nullptr,
                     0);
