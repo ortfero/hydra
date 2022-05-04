@@ -101,7 +101,7 @@ namespace hydra {
             if(p.value() - consumer_ < capacity_)
                 return p;
 
-            blocks_count_++;
+            ++blocks_count_;
 
             while(p.value() - consumer_ >= capacity_)
                 std::this_thread::yield();

@@ -24,7 +24,8 @@ namespace hydra {
     private:
         std::thread worker_;
         queue_type messages_;
-        futex_event new_message_ {};
+        futex_event new_message_;
+        std::uint32_t messages_processed_ {0};
         std::atomic_flag stopping_ {};
 
     public:
@@ -71,20 +72,23 @@ namespace hydra {
                 if(messages_.size() != 0) {
                     auto messages = batch<Q> {messages_};
                     handler(messages);
+                    messages_processed_ += messages.fetched_count();
                 }
 
                 while(!stopping_.test_and_set(std::memory_order_relaxed)) {
                     stopping_.clear(std::memory_order_relaxed);
-                    new_message_.wait();
+                    new_message_.wait(messages_processed_);
                     if(messages_.size() != 0) {
                         auto messages = batch<Q> {messages_};
                         handler(messages);
+                        messages_processed_ += messages.fetched_count();
                     }
                 }
 
                 if(messages_.size() != 0) {
                     auto messages = batch<Q> {messages_};
                     handler(messages);
+                    messages_processed_ += messages.fetched_count();
                 }
 
                 stopping_.clear(std::memory_order_relaxed);

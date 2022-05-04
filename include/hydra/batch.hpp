@@ -16,6 +16,7 @@ namespace hydra {
     private:
         Q& queue_;
         size_type size_;
+        std::uint32_t fetched_count_ {0};
 
     public:
         batch() = delete;
@@ -25,8 +26,13 @@ namespace hydra {
 
         size_type size() const noexcept { return size_; }
         sequence try_fetch() { return queue_.try_fetch(); }
-        void fetched() { queue_.fetched(); }
         value_type& operator[](sequence n) { return queue_[n]; }
+        std::uint32_t fetched_count() const noexcept { return fetched_count_; }
+
+        void fetched() {
+            queue_.fetched();
+            ++fetched_count_;
+        }
     };   // batch
 
 
