@@ -71,18 +71,17 @@ namespace hydra {
         }
 
 
-        void wait() noexcept {
-            auto wait_until_this = value_.load(std::memory_order_relaxed);
+        void wait(std::uint32_t events_processed) noexcept {
 #if defined(_WIN32)
             WaitOnAddress(&value_,
-			              &wait_until_this,
-			              sizeof(wait_until_this),
+                          &events_processed,
+                          sizeof(events_processed),
 						  DWORD(-1));
 #elif defined(__linux__)
             syscall(SYS_futex,
                     &value_,
                     FUTEX_WAIT_PRIVATE,
-                    wait_until_this,
+                    events_processed,
                     nullptr,
                     nullptr,
                     0);
@@ -91,14 +90,14 @@ namespace hydra {
 
 
         template<typename Rep, typename Period>
-        void wait(std::chrono::duration<Rep, Period> timeout) noexcept {
+        void wait(std::uint32_t events_processed,
+                  std::chrono::duration<Rep, Period> timeout) noexcept {
             using namespace std::chrono;
-            auto wait_until_this = value_.load(std::memory_order_relaxed);
 #if defined(_WIN32)
             auto const ms = duration_cast<milliseconds>(timeout);
             WaitOnAddress(&value_,
-                          &wait_until_this,
-                          sizeof(wait_until_this),
+                          &events_processed,
+                          sizeof(events_processed),
                           DWORD(timeout.count()));
 #elif defined(__linux__)
             auto const secs = duration_cast<seconds>(timeout);
@@ -108,7 +107,7 @@ namespace hydra {
             syscall(SYS_futex,
                     &value_,
                     FUTEX_WAIT_PRIVATE,
-                    wait_until_this,
+                    events_processed,
                     &ts,
                     nullptr,
                     0);
