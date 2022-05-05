@@ -25,7 +25,9 @@
 
 #    include <synchapi.h>
 
-#    pragma comment(lib, "synchronization.lib")
+#    if defined(_MSC_VER)
+#        pragma comment(lib, "synchronization.lib")
+#    endif
 
 #elif defined(__linux__)
 
