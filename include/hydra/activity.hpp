@@ -6,8 +6,8 @@
 #include <thread>
 
 #include <hydra/batch.hpp>
-#include <hydra/futex_event.hpp>
 #include <hydra/mpsc_queue.hpp>
+#include <hydra/sequence.hpp>
 
 
 namespace hydra {
@@ -24,7 +24,7 @@ namespace hydra {
     private:
         std::thread worker_;
         queue_type messages_;
-        futex_event new_message_;
+        std::atomic_uint32_t new_message_;
         std::uint32_t messages_processed_ {0};
         std::atomic_flag stopping_ {};
 

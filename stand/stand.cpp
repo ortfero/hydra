@@ -13,7 +13,7 @@ int main(int, char**) {
     activity.reserve(2);
     auto const run_result = activity.run([](auto& batch) {
         for(auto seq = batch.try_fetch(); !!seq; seq = batch.try_fetch()) {
-            std::fprintf(stdout, "%s\n", batch[seq].data());
+            //std::fprintf(stdout, "%s\n", batch[seq].data());
             batch.fetched();
         }
     });
