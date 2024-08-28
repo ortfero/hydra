@@ -1,8 +1,7 @@
 project := "hydra"
-include_dir := "include"
 test-file := project + "-test"
 stand-file := project + "-stand"
-flags := "-std=c++20 -I" + include_dir
+flags := "-std=c++20 -Iinclude"
 debug-flags := flags + " -g -O0"
 release-flags := flags + " -O3"
 
